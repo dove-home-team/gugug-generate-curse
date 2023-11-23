@@ -1,3 +1,5 @@
+package io.github.dovehome
+
 class Greeting {
     private val platform = getPlatform()
 
