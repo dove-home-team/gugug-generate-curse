@@ -3,7 +3,7 @@ import org.jetbrains.compose.ExperimentalComposeLibrary
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    
+    alias(libs.plugins.serialization)
     alias(libs.plugins.jetbrainsCompose)
 }
 
@@ -22,7 +22,8 @@ kotlin {
             implementation(compose.material)
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
-            implementation("org.seleniumhq.selenium:selenium-java:4.15.0")
+            implementation(libs.selenium.java)
+//            implementation("org.seleniumhq.selenium:selenium-java:4.15.0")
         }
     }
 }

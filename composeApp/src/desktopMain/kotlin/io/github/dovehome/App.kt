@@ -5,8 +5,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.Button
 import androidx.compose.material.Checkbox
 import androidx.compose.material.MaterialTheme
@@ -16,20 +14,41 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.darkrockstudios.libraries.mpfilepicker.FilePicker
+import io.github.dovehome.Select.*
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.skia.paragraph.TextBox
 import org.openqa.selenium.WebDriver
+import org.openqa.selenium.chrome.ChromeDriver
+import org.openqa.selenium.chrome.ChromeOptions
 import org.openqa.selenium.edge.EdgeDriver
 import org.openqa.selenium.edge.EdgeOptions
+import org.openqa.selenium.firefox.FirefoxDriver
+import org.openqa.selenium.firefox.FirefoxOptions
+import org.openqa.selenium.ie.InternetExplorerDriver
+import org.openqa.selenium.ie.InternetExplorerOptions
+import org.openqa.selenium.remote.RemoteWebDriver
 import java.awt.FileDialog
 
 //var option: EdgeOptions? = EdgeOptions().addArguments("headless")
 //var driver: WebDriver? = EdgeDriver(option);
 
+var driver: WebDriver = TODO();
+
+enum class Select {
+    EDGE,
+    IE,
+    FIREFOX,
+    CHROME
+}
+
+fun selectBrowser(select: Select) {
+    when(select) {
+        EDGE -> EdgeDriver(EdgeOptions().addArguments("headless"))
+        IE -> InternetExplorerDriver()
+        FIREFOX -> FirefoxDriver(FirefoxOptions().addArguments("headless"))
+        CHROME -> ChromeDriver(ChromeOptions().addArguments("headless"))
+    }
+}
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
