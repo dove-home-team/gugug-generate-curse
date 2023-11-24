@@ -22,6 +22,7 @@ kotlin {
             implementation(compose.material)
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
+            implementation("org.seleniumhq.selenium:selenium-java:4.15.0")
         }
     }
 }
