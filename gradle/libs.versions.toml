@@ -5,6 +5,7 @@ compose-compiler = "1.5.4"
 kotlin = "1.9.20"
 junit = "4.13.2"
 selenium = "4.15.0"
+gson = "2.10.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -16,6 +17,7 @@ compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview"
 compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
 compose-material = { module = "androidx.compose.material:material", version.ref = "compose" }
 selenium-java = {module = "org.seleniumhq.selenium:selenium-java", version.ref = "selenium"}
+google-gson = {module = "com.google.code.gson:gson", version.ref = "gson"}
 [plugins]
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }

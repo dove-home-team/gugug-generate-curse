@@ -23,6 +23,7 @@ kotlin {
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
             implementation(libs.selenium.java)
+            implementation(libs.google.gson)
 //            implementation("org.seleniumhq.selenium:selenium-java:4.15.0")
         }
     }
