@@ -5,6 +5,8 @@ build/
 !**/src/test/**/build/
 
 libs/
+cmcl.json
+.minecraft/
 
 ### IntelliJ IDEA ###
 .idea/
@@ -39,3 +41,4 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+gugug.json

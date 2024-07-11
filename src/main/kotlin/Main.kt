@@ -14,6 +14,29 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import com.google.gson.GsonBuilder
+import com.google.gson.annotations.SerializedName
+import com.mrshiehx.cmcl.CMCL
+import kotlin.io.path.*
+
+data class GuGuG(
+    @SerializedName("mc-version") val mcVersion: String,
+)
+
+val GSON = GsonBuilder().setPrettyPrinting().create()
+val path = Path("gugug.json")
+var guGuG: GuGuG? = null
+
+fun configInit() {
+    if (path.notExists()) {
+        guGuG = GuGuG("1.20.1")
+        path.writeText(GSON.toJson(guGuG), Charsets.UTF_8)
+
+
+    } else {
+        guGuG = GSON.fromJson(path.readText(Charsets.UTF_8), GuGuG::class.java)
+    }
+}
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -24,8 +47,7 @@ fun App() {
     val options = listOf("0", "1", "2")
     val sourceSelect=  remember { mutableMapOf("0" to "官方源", "1" to "BM-CL源") }
     var selectText by remember { mutableStateOf(sourceSelect["0"]!!) }
-
-
+    configInit()
     MaterialTheme {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -73,7 +95,13 @@ fun App() {
                     }
                 }
             }
-
+            Row {
+                Button(    onClick = {
+                    CMCL.main(arrayOf("install", "-h"))
+                }) {
+                    Text("下载")
+                }
+            }
         }
 
     }
