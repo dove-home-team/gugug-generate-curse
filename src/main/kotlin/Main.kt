@@ -12,6 +12,8 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import com.google.gson.GsonBuilder
@@ -19,80 +21,30 @@ import com.google.gson.annotations.SerializedName
 import com.mrshiehx.cmcl.CMCL
 import kotlin.io.path.*
 
-data class GuGuG(
-    @SerializedName("mc-version") val mcVersion: String,
-)
-
-val GSON = GsonBuilder().setPrettyPrinting().create()
-val path = Path("gugug.json")
-var guGuG: GuGuG? = null
-
-fun configInit() {
-    if (path.notExists()) {
-        guGuG = GuGuG("1.20.1")
-        path.writeText(GSON.toJson(guGuG), Charsets.UTF_8)
-
-
-    } else {
-        guGuG = GSON.fromJson(path.readText(Charsets.UTF_8), GuGuG::class.java)
-    }
-}
-
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 @Preview
 fun App() {
-    var text by remember { mutableStateOf("Hello, World!") }
-    var expanded by remember { mutableStateOf(false) }
-    val options = listOf("0", "1", "2")
-    val sourceSelect=  remember { mutableMapOf("0" to "官方源", "1" to "BM-CL源") }
-    var selectText by remember { mutableStateOf(sourceSelect["0"]!!) }
-    configInit()
+
+    var expanded1 by remember { mutableStateOf(false) }
+    var fileDir by remember { mutableStateOf("choose file") }
+    var canSelectFile by remember { mutableStateOf(false) }
     MaterialTheme {
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            selectSources()
             Row {
-                Text("下载源")
-                ExposedDropdownMenuBox(
-                    expanded = expanded,
-                    onExpandedChange = {
-                        expanded = !expanded
-                    }
-                ) {
-                    TextField(
-                        readOnly = true,
-                        value = selectText,
-                        onValueChange = { },
-                        label = { Text(selectText) },
-                        trailingIcon = {
-                            ExposedDropdownMenuDefaults.TrailingIcon(
-                                expanded = expanded
-                            )
-                        },
-                        colors = ExposedDropdownMenuDefaults.textFieldColors(),
-                        modifier = Modifier.size(300.dp, 30.dp)
-                    )
-                    ExposedDropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = {
-                            expanded = false
-                        }
-                    ) {
-                        sourceSelect.forEach { (key, name) ->
+                TextButton(
+                    onClick = {
+                          canSelectFile = true
+                    },
+                    enabled = true,
+                    modifier = Modifier.size(100.dp,40.dp),
 
-                            DropdownMenuItem(
-                                onClick = {
-                                    selectText = name
-                                    expanded = false
-                                }
-                            ) {
-                                Text(name)
-                            }
-                        }
-                    }
+                ) {
+                    Text(fileDir)
                 }
             }
             Row {
@@ -103,6 +55,72 @@ fun App() {
                 }
             }
         }
+
+    }
+    if (canSelectFile) {
+        selectFile()
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun selectSources(): String {
+    var expanded by remember { mutableStateOf(false) }
+    val sourceSelect: MutableMap<String, String> =  remember { mutableMapOf("官方源" to "0", "BM-CL源" to "1") }
+    var selectText by remember { mutableStateOf("官方源") }
+    Row {
+        Text("下载源")
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = {
+                expanded = !expanded
+            }
+        ) {
+            TextField(
+                readOnly = true,
+                value = selectText,
+                onValueChange = { },
+                label = { Text(selectText) },
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(
+                        expanded = expanded
+                    )
+                },
+                colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                modifier = Modifier.size(300.dp, 30.dp)
+            )
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = {
+                    expanded = false
+                }
+            ) {
+                sourceSelect.forEach { (name, key) ->
+
+                    DropdownMenuItem(
+                        onClick = {
+                            selectText = name
+                            expanded = false
+                        }
+                    ) {
+                        Text(name)
+                    }
+                }
+            }
+        }
+    }
+    return sourceSelect[selectText]!!
+}
+
+@Composable
+fun selectFile() {
+    Dialog(
+        onDismissRequest = { /*TODO*/ },
+        properties = DialogProperties(
+            dismissOnClickOutside = false,
+            dismissOnBackPress = false
+        )
+    ) {
 
     }
 }
