@@ -1,129 +1,56 @@
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.toSize
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import com.google.gson.GsonBuilder
-import com.google.gson.annotations.SerializedName
-import com.mrshiehx.cmcl.CMCL
-import kotlin.io.path.*
+import i18n.Language
+import org.apache.commons.collections4.bidimap.TreeBidiMap
+
+
 
 @Composable
 @Preview
 fun App() {
+    val fileDir: MutableState<String> = remember { mutableStateOf("choose file") }
+    val canSelectFile: MutableState<Boolean> = remember { mutableStateOf(false) }
+    val sourceChoose: MutableState<String> = remember { mutableStateOf("官方源") }
+    val checkBoolean: MutableState<Boolean> = remember { mutableStateOf(false) }
+    val language: MutableState<String> = remember { mutableStateOf(Language.EnUs.name) }
+    val sourceSelect = remember { mutableStateOf(TreeBidiMap(mapOf("官方源" to "0", "BM-CL源" to "1"))) }
+    config(sourceChoose, checkBoolean, fileDir, language)
+    val lang = remember { Language.valueOf(config!!.language) }
+    val get = lang.supplier.get()
+    sourceSelect.value = TreeBidiMap(mapOf(get.get("sources.0")!! to "0", get.get("sources.1")!! to "1"))
+    sourceChoose.value = sourceSelect.value.getKey(config!!.sourceHome)
 
-    var expanded1 by remember { mutableStateOf(false) }
-    var fileDir by remember { mutableStateOf("choose file") }
-    var canSelectFile by remember { mutableStateOf(false) }
     MaterialTheme {
+        top(sourceSelect, sourceChoose, lang)
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            selectSources()
             Row {
-                TextButton(
-                    onClick = {
-                          canSelectFile = true
-                    },
-                    enabled = true,
-                    modifier = Modifier.size(100.dp,40.dp),
-
-                ) {
-                    Text(fileDir)
-                }
+                isClient(checkBoolean, lang)
             }
-            Row {
-                Button(    onClick = {
-                    CMCL.main(arrayOf("install", "-h"))
-                }) {
-                    Text("下载")
-                }
-            }
+            chooseFile(canSelectFile, fileDir)
+            download()
         }
 
     }
-    if (canSelectFile) {
-        selectFile()
-    }
+
 }
 
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun selectSources(): String {
-    var expanded by remember { mutableStateOf(false) }
-    val sourceSelect: MutableMap<String, String> =  remember { mutableMapOf("官方源" to "0", "BM-CL源" to "1") }
-    var selectText by remember { mutableStateOf("官方源") }
-    Row {
-        Text("下载源")
-        ExposedDropdownMenuBox(
-            expanded = expanded,
-            onExpandedChange = {
-                expanded = !expanded
-            }
-        ) {
-            TextField(
-                readOnly = true,
-                value = selectText,
-                onValueChange = { },
-                label = { Text(selectText) },
-                trailingIcon = {
-                    ExposedDropdownMenuDefaults.TrailingIcon(
-                        expanded = expanded
-                    )
-                },
-                colors = ExposedDropdownMenuDefaults.textFieldColors(),
-                modifier = Modifier.size(300.dp, 30.dp)
-            )
-            ExposedDropdownMenu(
-                expanded = expanded,
-                onDismissRequest = {
-                    expanded = false
-                }
-            ) {
-                sourceSelect.forEach { (name, key) ->
 
-                    DropdownMenuItem(
-                        onClick = {
-                            selectText = name
-                            expanded = false
-                        }
-                    ) {
-                        Text(name)
-                    }
-                }
-            }
-        }
-    }
-    return sourceSelect[selectText]!!
-}
-
-@Composable
-fun selectFile() {
-    Dialog(
-        onDismissRequest = { /*TODO*/ },
-        properties = DialogProperties(
-            dismissOnClickOutside = false,
-            dismissOnBackPress = false
-        )
-    ) {
-
-    }
-}
 
 fun main() = application {
     Window(onCloseRequest = ::exitApplication) {

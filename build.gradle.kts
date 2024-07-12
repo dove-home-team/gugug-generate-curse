@@ -26,6 +26,7 @@ dependencies {
         exclude(group = "org.apache.commons", module = "commons-compress")
     }
     implementation("org.apache.commons:commons-compress:1.26.2")
+    implementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.9.3")
     implementation("com.google.code.gson:gson:2.11.0")
     implementation(fileTree("libs").include("*.jar"))
 }
