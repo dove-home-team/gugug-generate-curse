@@ -5,6 +5,7 @@ plugins {
     kotlin("jvm")
     id("org.jetbrains.compose")
     id("de.undercouch.download").version("5.6.0")
+    id("com.google.devtools.ksp") version "1.9.22-1.0.17"
 }
 
 group = "io.github.dovehometeam"
@@ -28,6 +29,11 @@ dependencies {
     implementation("org.apache.commons:commons-compress:1.26.2")
     implementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.9.3")
     implementation("com.google.code.gson:gson:2.11.0")
+    implementation("cafe.adriel.lyricist:lyricist:1.7.0")
+
+// If you want to use @LyricistStrings to generate code for you
+    ksp("cafe.adriel.lyricist:lyricist-processor:1.7.0")
+
     implementation(fileTree("libs").include("*.jar"))
 }
 

@@ -4,10 +4,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import i18n.Language
+import i18n.Locales
 import org.apache.commons.collections4.bidimap.TreeBidiMap
 import java.util.function.Function
-import java.util.function.Supplier
 import kotlin.io.path.writeText
 
 @Composable
@@ -19,7 +18,7 @@ fun dropdown(
     maps: MutableState<TreeBidiMap<String, String>>,
     superItemClick: Function<String, *> = Function {
         title.value = it
-        config!!.sourceHome = maps.value.getValue(it)
+        config.sourceHome = maps.value.getValue(it)
         configPath.writeText(gson.toJson(config), Charsets.UTF_8)
         null
     },
@@ -67,22 +66,45 @@ fun dropdown(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun top(sourceSelect: MutableState<TreeBidiMap<String, String>>, sourceChoose: MutableState<String>, lang: Language) {
+fun top(
+    sourceSelect: MutableState<TreeBidiMap<String, String>>,
+    sourceChoose: MutableState<String>
+) {
+    val languageSelect = remember {
+        mutableStateOf(TreeBidiMap(
+            mapOf(
+                lyricist.strings.englishLanguage to Locales.EN,
+                lyricist.strings.chineseLanguage to Locales.ZH
+            )
+        ))
+    }
 
     TopAppBar(
         modifier = Modifier.height(50.dp),
         backgroundColor = Color.Cyan
     ) {
         Text(
-            text = lang.supplier.get().get("sources.title")!!,
+            text = lyricist.strings.sourcesTitle,
             modifier = Modifier.size(70.dp, 30.dp)
         )
         dropdown(
             readOnly = true,
             title = sourceChoose,
             maps = sourceSelect
+        )
+        val title = mutableStateOf(lyricist.strings.sourcesTitle + languageSelect.value.getKey(config.language))
+        dropdown(
+            readOnly = true,
+            title = title,
+            maps = languageSelect,
+            superItemClick = {
+
+                config.language = languageSelect.value.getValue(it)
+                configPath.writeText(gson.toJson(config), Charsets.UTF_8)
+                title.value = lyricist.strings.sourcesTitle + languageSelect.value.getKey(config.language)
+                null
+            }
         )
 
     }

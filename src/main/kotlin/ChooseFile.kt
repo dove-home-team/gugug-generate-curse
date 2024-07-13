@@ -37,7 +37,7 @@ fun chooseFile(canSelectFile: MutableState<Boolean>, fileDir: MutableState<Strin
 @Composable
 fun selectFile(canSelectFile: MutableState<Boolean>, fileDir: MutableState<String>) {
     var list by remember {
-        val path = Path(config!!.lastSelectFile)
+        val path = Path(config.lastSelectFile)
         mutableStateOf(if (path.isDirectory()) path.toFile().list() else path.parent.toFile().list())
     }
     Dialog(
@@ -65,15 +65,15 @@ fun selectFile(canSelectFile: MutableState<Boolean>, fileDir: MutableState<Strin
             LazyColumn(
                 modifier = Modifier.fillMaxWidth().padding(20.dp)
             ) {
-                val value =
+
                 item {
                     TextButton(
                         onClick = {
                             val parent = Path(fileDir.value).parent
                             if (parent != null) {
                                 fileDir.value = parent.toString()
-                                config!!.lastSelectFile = fileDir.value
-                                list = Path(config!!.lastSelectFile).toFile().list()
+                                config.lastSelectFile = fileDir.value
+                                list = Path(config.lastSelectFile).toFile().list()
                                 configPath.writeText(gson.toJson(config), Charsets.UTF_8)
                             }
                         },
@@ -93,7 +93,7 @@ fun selectFile(canSelectFile: MutableState<Boolean>, fileDir: MutableState<Strin
                             if (p.isDirectory()) {
                                 list = p.toFile().list()
                             }
-                            config!!.lastSelectFile = fileDir.value
+                            config.lastSelectFile = fileDir.value
                             configPath.writeText(gson.toJson(config), Charsets.UTF_8)
                         },
                         enabled = true,

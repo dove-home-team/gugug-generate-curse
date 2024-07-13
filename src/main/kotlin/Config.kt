@@ -1,8 +1,9 @@
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import cafe.adriel.lyricist.rememberStrings
 import com.google.gson.GsonBuilder
 import com.google.gson.annotations.SerializedName
-import i18n.Language
-import org.apache.commons.collections4.bidimap.TreeBidiMap
+import i18n.Locales
 import java.util.function.Supplier
 import kotlin.io.path.Path
 import kotlin.io.path.notExists
@@ -19,18 +20,17 @@ data class God(
 )
 
 val gson = GsonBuilder().setPrettyPrinting().create()
-var config:God? = null
+lateinit var config:God
 val supplier: Supplier<God> = Supplier<God> {
-    config = God("0", "0", true, "1.20.1", System.getProperty("user.dir"), Language.EnUs.name)
+    config = God("0", "0", true, "1.20.1", System.getProperty("user.dir"), Locales.EN)
     config
 }
 val configPath = Path("gugug.json")
 
+@Composable
 fun config(
-    sourceChoose: MutableState<String>,
     checkBoolean: MutableState<Boolean>,
-    fileDir: MutableState<String>,
-    language: MutableState<String>
+    fileDir: MutableState<String>
 ) {
     if (configPath.notExists()) {
         configPath.writeText(gson.toJson(supplier.get()), Charsets.UTF_8)
@@ -38,8 +38,7 @@ fun config(
         config = gson.fromJson(configPath.readText(Charsets.UTF_8), God::class.java)
     }
 
-    checkBoolean.value = config!!.client
-    fileDir.value = config!!.lastSelectFile
-    language.value = config!!.language
-
+    checkBoolean.value = config.client
+    fileDir.value = config.lastSelectFile
+    lyricist = rememberStrings(Locales.EN, config.language)
 }
