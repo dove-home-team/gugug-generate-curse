@@ -1,8 +1,10 @@
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import cafe.adriel.lyricist.rememberStrings
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.annotations.SerializedName
+import com.google.gson.reflect.TypeToken
 import i18n.Locales
 import java.util.function.Consumer
 import java.util.function.Supplier
@@ -34,8 +36,12 @@ fun config(
     if (configPath.notExists()) {
         configPath.writeText(gson.toJson(supplier.get()), Charsets.UTF_8)
     } else {
-        config = gson.fromJson(configPath.readText(Charsets.UTF_8), God::class.java)
+        config = gson.fromJson(configPath.readText(Charsets.UTF_8))
     }
 
     fileDir.value = config.lastSelectFile
+}
+
+fun <T> Gson.fromJson(readText: String): T {
+    return fromJson(readText, object : TypeToken<T>() {}.type)
 }
