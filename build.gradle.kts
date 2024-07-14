@@ -1,5 +1,6 @@
 import de.undercouch.gradle.tasks.download.Download
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.incremental.createDirectory
 
 plugins {
     kotlin("jvm")
@@ -16,6 +17,7 @@ repositories {
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     google()
 }
+file("libs").createDirectory()
 
 dependencies {
     // Note, if you develop a library, you should use compose.desktop.common.
