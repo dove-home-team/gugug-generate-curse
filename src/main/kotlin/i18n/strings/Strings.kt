@@ -1,11 +1,13 @@
 package i18n.strings
 
+import org.apache.commons.collections4.bidimap.TreeBidiMap
+
 
 data class Strings(
-    val sources0: String,
-    val sources1: String,
     val sourcesTitle: String,
-    val clientTitle: String,
-    val chineseLanguage: String,
-    val englishLanguage: String,
+    val languageTitle: String,
+    val languages: TreeBidiMap<String, String>,
+    val sources: TreeBidiMap<String, String>,
+    val downloadClientTitle: String,
+    val downloadServerTitle: String,
 )

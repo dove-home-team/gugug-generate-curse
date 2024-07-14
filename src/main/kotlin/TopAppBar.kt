@@ -4,9 +4,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import i18n.Locales
+import cafe.adriel.lyricist.LocalStrings
+import cafe.adriel.lyricist.ProvideStrings
 import org.apache.commons.collections4.bidimap.TreeBidiMap
 import java.util.function.Function
+import kotlin.io.path.bufferedWriter
 import kotlin.io.path.writeText
 
 @Composable
@@ -15,13 +17,8 @@ fun dropdown(
     readOnly: Boolean,
     valueChangeEvent: (String) -> Unit = { },
     title: MutableState<String>,
-    maps: MutableState<TreeBidiMap<String, String>>,
-    superItemClick: Function<String, *> = Function {
-        title.value = it
-        config.sourceHome = maps.value.getValue(it)
-        configPath.writeText(gson.toJson(config), Charsets.UTF_8)
-        null
-    },
+    maps: TreeBidiMap<String, String>,
+    superItemClick: Function<String, *>,
     modifier: Modifier = Modifier.size(300.dp, 30.dp)
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -51,11 +48,12 @@ fun dropdown(
                 expanded = false
             }
         ) {
-            maps.value.forEach { (name, key) ->
+            maps.forEach { (name, _) ->
 
                 DropdownMenuItem(
                     onClick = {
                         superItemClick.apply(name)
+                        configPath.writeText(gson.toJson(config), Charsets.UTF_8)
                         expanded = false
                     }
                 ) {
@@ -67,45 +65,54 @@ fun dropdown(
 }
 
 @Composable
-fun top(
-    sourceSelect: MutableState<TreeBidiMap<String, String>>,
-    sourceChoose: MutableState<String>
-) {
-    val languageSelect = remember {
-        mutableStateOf(TreeBidiMap(
-            mapOf(
-                lyricist.strings.englishLanguage to Locales.EN,
-                lyricist.strings.chineseLanguage to Locales.ZH
-            )
-        ))
-    }
-
+fun top() {
     TopAppBar(
         modifier = Modifier.height(50.dp),
         backgroundColor = Color.Cyan
     ) {
-        Text(
-            text = lyricist.strings.sourcesTitle,
-            modifier = Modifier.size(70.dp, 30.dp)
-        )
-        dropdown(
-            readOnly = true,
-            title = sourceChoose,
-            maps = sourceSelect
-        )
-        val title = mutableStateOf(lyricist.strings.sourcesTitle + languageSelect.value.getKey(config.language))
-        dropdown(
-            readOnly = true,
-            title = title,
-            maps = languageSelect,
-            superItemClick = {
 
-                config.language = languageSelect.value.getValue(it)
-                configPath.writeText(gson.toJson(config), Charsets.UTF_8)
-                title.value = lyricist.strings.sourcesTitle + languageSelect.value.getKey(config.language)
-                null
-            }
-        )
+
+
+        ProvideStrings(lyricist) {
+            val sourcesTitle = LocalStrings.current.sourcesTitle
+            val sources = LocalStrings.current.sources
+            val titleSources = mutableStateOf(sourcesTitle + sources.getKey(config.sourceHome))
+            dropdown(
+                readOnly = true,
+                title = titleSources,
+                maps = sources,
+                superItemClick = {
+                    {
+                        config.sourceHome = sources.getValue(it)
+                        null
+                    }
+                }
+            )
+        }
+
+        ProvideStrings(lyricist) {
+            val languageTitle = LocalStrings.current.languageTitle
+            val languages = LocalStrings.current.languages
+            val titleLanguage = mutableStateOf(languageTitle + languages.getKey(config.language))
+            dropdown(
+                readOnly = true,
+                title = titleLanguage,
+                maps = languages,
+                superItemClick = {
+
+                    config.language = languages.getValue(it)
+                    lyricist.languageTag = config.language
+
+                    null
+                }
+            )
+        }
+
+
 
     }
+
+
+
+
 }

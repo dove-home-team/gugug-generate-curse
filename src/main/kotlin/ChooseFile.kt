@@ -17,7 +17,8 @@ import kotlin.io.path.isDirectory
 import kotlin.io.path.writeText
 
 @Composable
-fun chooseFile(canSelectFile: MutableState<Boolean>, fileDir: MutableState<String>) {
+fun chooseFile(fileDir: MutableState<String>) {
+    val canSelectFile = remember { mutableStateOf(false) }
     Row {
         TextButton(
             onClick = {

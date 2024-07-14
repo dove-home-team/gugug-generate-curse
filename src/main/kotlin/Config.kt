@@ -4,6 +4,7 @@ import cafe.adriel.lyricist.rememberStrings
 import com.google.gson.GsonBuilder
 import com.google.gson.annotations.SerializedName
 import i18n.Locales
+import java.util.function.Consumer
 import java.util.function.Supplier
 import kotlin.io.path.Path
 import kotlin.io.path.notExists
@@ -13,7 +14,6 @@ import kotlin.io.path.writeText
 data class God(
     @SerializedName("sourceHome") var sourceHome: String,
     @SerializedName("download-mode") var mode: String,
-    @SerializedName("is-client") var client: Boolean,
     @SerializedName("mc-version") var mcVersion: String,
     @SerializedName("last-select-file") var lastSelectFile: String,
     @SerializedName("language") var language: String,
@@ -22,14 +22,13 @@ data class God(
 val gson = GsonBuilder().setPrettyPrinting().create()
 lateinit var config:God
 val supplier: Supplier<God> = Supplier<God> {
-    config = God("0", "0", true, "1.20.1", System.getProperty("user.dir"), Locales.EN)
+    config = God("0", "0", "1.20.1", System.getProperty("user.dir"), Locales.EN)
     config
 }
 val configPath = Path("gugug.json")
 
 @Composable
 fun config(
-    checkBoolean: MutableState<Boolean>,
     fileDir: MutableState<String>
 ) {
     if (configPath.notExists()) {
@@ -38,7 +37,5 @@ fun config(
         config = gson.fromJson(configPath.readText(Charsets.UTF_8), God::class.java)
     }
 
-    checkBoolean.value = config.client
     fileDir.value = config.lastSelectFile
-    lyricist = rememberStrings(Locales.EN, config.language)
 }

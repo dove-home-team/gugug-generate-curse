@@ -3,50 +3,51 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import cafe.adriel.lyricist.Lyricist
+import cafe.adriel.lyricist.*
 
-import i18n.Locales
 import i18n.strings.Strings
+
 
 import org.apache.commons.collections4.bidimap.TreeBidiMap
 
-
+//全局添加compose注解
 lateinit var lyricist: Lyricist<Strings>
 
 @Composable
 @Preview
 fun App() {
 
+
     val fileDir: MutableState<String> = remember { mutableStateOf("choose file") }
-    val canSelectFile: MutableState<Boolean> = remember { mutableStateOf(false) }
-    val sourceChoose: MutableState<String> = remember { mutableStateOf("官方源") }
-    val checkBoolean: MutableState<Boolean> = remember { mutableStateOf(false) }
-    val language: MutableState<String> = remember { mutableStateOf(Locales.EN) }
+    var firstRun by remember { mutableStateOf(true) }
+    lyricist = rememberStrings()
 
-    val sourceSelect = remember { mutableStateOf(TreeBidiMap(mapOf("官方源" to "0", "BM-CL源" to "1"))) }
-
-    config(checkBoolean, fileDir)
+    config(fileDir)
+    if (firstRun) {
+        lyricist.languageTag = config.language
+        firstRun = false
+    }
 
 
     MaterialTheme {
 
 
-        top(sourceSelect, sourceChoose)
+        top()
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Row {
-                isClient(checkBoolean)
-            }
-            chooseFile(canSelectFile, fileDir)
+
+            chooseFile(fileDir)
             download()
         }
     }
@@ -57,5 +58,21 @@ fun App() {
 fun main() = application {
     Window(onCloseRequest = ::exitApplication) {
         App()
+    }
+}
+
+@Composable
+fun SwitchLocaleButton(
+    lyricist: Lyricist<Strings>,
+    languageTag: LanguageTag,
+    modifier: Modifier
+) {
+    Button(
+        onClick = {
+            lyricist.languageTag = languageTag
+        },
+        modifier = modifier,
+    ) {
+        Text(languageTag)
     }
 }
