@@ -19,12 +19,13 @@ data class God(
     @SerializedName("mc-version") var mcVersion: String,
     @SerializedName("last-select-file") var lastSelectFile: String,
     @SerializedName("language") var language: String,
+    @SerializedName("mod-loader") var modLoader: String,
 )
 
 val gson = GsonBuilder().setPrettyPrinting().create()
 lateinit var config:God
 val supplier: Supplier<God> = Supplier<God> {
-    config = God("0", "0", "1.20.1", System.getProperty("user.dir"), Locales.EN)
+    config = God("0", "0", "1.20.1", System.getProperty("user.dir"), Locales.EN, "forge")
     config
 }
 val configPath = Path("gugug.json")
@@ -36,12 +37,8 @@ fun config(
     if (configPath.notExists()) {
         configPath.writeText(gson.toJson(supplier.get()), Charsets.UTF_8)
     } else {
-        config = gson.fromJson(configPath.readText(Charsets.UTF_8))
+        config = gson.fromJson(configPath.readText(Charsets.UTF_8), God::class.java)
     }
 
     fileDir.value = config.lastSelectFile
-}
-
-fun <T> Gson.fromJson(readText: String): T {
-    return fromJson(readText, object : TypeToken<T>() {}.type)
 }

@@ -18,4 +18,12 @@ internal val ZH = Strings(
     )),
     downloadClientTitle = "下载客户端",
     downloadServerTitle = "下载服务端",
+    chooseTitle = "已选取文件：",
+    noChooseTitle = "请选取文件",
+    modes = TreeBidiMap(mapOf(
+        "鸽子之家csv" to "0",
+        "curse包下载" to "1",
+        "modrinth包下载" to "2",
+    )),
+    modeTitle = "下载模式：",
 )

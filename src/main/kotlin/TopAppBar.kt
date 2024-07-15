@@ -19,7 +19,7 @@ fun dropdown(
     title: MutableState<String>,
     maps: TreeBidiMap<String, String>,
     superItemClick: Function<String, *>,
-    modifier: Modifier = Modifier.size(300.dp, 30.dp)
+    modifier: Modifier = Modifier.size(270.dp, 30.dp)
 ) {
     var expanded by remember { mutableStateOf(false) }
     ExposedDropdownMenuBox(
@@ -82,11 +82,11 @@ fun top() {
                 title = titleSources,
                 maps = sources,
                 superItemClick = {
-                    {
-                        config.sourceHome = sources.getValue(it)
-                        null
-                    }
-                }
+                    config.sourceHome = sources.getValue(it)
+                    titleSources.value = sourcesTitle + sources.getKey(config.sourceHome)
+                    null
+                },
+                modifier = Modifier.size(200.dp, 30.dp)
             )
         }
 
@@ -104,7 +104,25 @@ fun top() {
                     lyricist.languageTag = config.language
 
                     null
-                }
+                },
+                modifier = Modifier.size(220.dp, 30.dp)
+            )
+        }
+
+        ProvideStrings(lyricist) {
+            val modes = LocalStrings.current.modes
+            val modeTitle = LocalStrings.current.modeTitle
+            val titleMode = mutableStateOf(modeTitle + modes.getKey(config.mode))
+            dropdown(
+                readOnly = true,
+                title = titleMode,
+                maps = modes,
+                superItemClick = {
+                    config.mode = modes.getValue(it)
+                    titleMode.value = modeTitle + modes.getKey(config.mode)
+                    null
+                },
+                modifier = Modifier.size(240.dp, 30.dp)
             )
         }
 

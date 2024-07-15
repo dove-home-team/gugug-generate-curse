@@ -12,9 +12,10 @@ fun download() {
     ProvideStrings(lyricist) {
         Row {
             Button(    onClick = {
-                CMCL.main(arrayOf("install", "-h"))
+                CMCL.main(arrayOf("install", config.mcVersion, ""))
             }) {
                 Text(LocalStrings.current.downloadClientTitle)
+
             }
             Text("   ")
             Button(    onClick = {

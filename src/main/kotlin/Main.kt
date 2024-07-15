@@ -16,8 +16,6 @@ import cafe.adriel.lyricist.*
 import i18n.strings.Strings
 
 
-import org.apache.commons.collections4.bidimap.TreeBidiMap
-
 //全局添加compose注解
 lateinit var lyricist: Lyricist<Strings>
 
@@ -47,8 +45,9 @@ fun App() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            chooseFile(fileDir)
+            chooseFile()
             download()
+
         }
     }
 

@@ -32,7 +32,7 @@ dependencies {
     implementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.9.3")
     implementation("com.google.code.gson:gson:2.11.0")
     implementation("cafe.adriel.lyricist:lyricist:1.7.0")
-
+    implementation("com.darkrockstudios:mpfilepicker:3.1.0")
 // If you want to use @LyricistStrings to generate code for you
     ksp("cafe.adriel.lyricist:lyricist-processor:1.7.0")
 
